@@ -85,7 +85,6 @@ def main():
                 print("{0}:{1}".format(connect_info["ip"], connect_info["port"]))
 
     except Exception as e:
-        print("ERROR :", "%s" % (e.__str__()))
         sys.exit()
 
 

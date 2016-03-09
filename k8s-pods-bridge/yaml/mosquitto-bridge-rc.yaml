@@ -2,32 +2,30 @@ apiVersion: v1
 kind: ReplicationController
 metadata:
   labels:
-    app: mosquitto
+    run: mosquitto
   name: mosquitto
 spec:
-  replicas: 2
+  replicas: 1
   selector:
-      app: mosquitto
+      run: mosquitto
   template:
     metadata:
       labels:
-        app: mosquitto
+        run: mosquitto
     spec:
       containers:
+        - name: mosquitto
           env:
             - name: K8S_API_SERVER_IP
-              value: localhost
+              value: "localhost"
             - name: K8S_API_SERVER_PORT
-              value: localhost
+              value: "8080"
             - name: POD_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: POD_METADATA_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+              value: "mosquitto"
           image: kairen/mosquitto-pod-bridge:0.1.0
-          name: mosquitto
           ports:
             - containerPort: 1883
