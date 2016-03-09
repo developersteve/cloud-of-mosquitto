@@ -30,6 +30,18 @@
                             "value": "8080"
                           },
                           {
+                            "name": "BRIDGE_QOS",
+                            "value": "2"
+                          },
+                          {
+                            "name": "BRIDGE_TOPIC",
+                            "value": "bridge"
+                          },
+                          {
+                            "name": "POD_METADATA_NAME",
+                            "value": "mosquitto"
+                          },
+                          {
                             "name": "POD_NAMESPACE",
                             "valueFrom": {
                               "fieldRef": {
@@ -37,10 +49,6 @@
                                 "fieldPath": "metadata.namespace"
                               }
                             }
-                          },
-                          {
-                            "name": "POD_METADATA_NAME",
-                            "value": "mosquitto"
                           }
                         ],
                         "ports": [
