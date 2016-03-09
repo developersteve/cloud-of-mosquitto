@@ -1,0 +1,78 @@
+{
+  "kind": "List",
+  "apiVersion": "v1",
+  "id": "mosquitto",
+  "items":[
+    {
+      "kind": "Pod",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mosquitto-1",
+        "labels": {
+          "name": "mosquitto",
+          "server-id": "1"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "server",
+            "image": "kairen/mosquitto-bridge",
+            "env":[
+              {
+                "name": "POD_NAMESPACE",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "metadata.namespace"
+                  }
+                }
+              }
+            ],
+            "ports":[
+              {
+                "containerPort": 1883
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "kind": "Pod",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "mosquitto-2",
+        "labels": {
+          "name": "mosquitto",
+          "server-id": "2"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "server",
+            "image": "kairen/mosquitto-bridge",
+            "env":[
+              { "name": "BRIDGE_BROKER_ID", "value": "1" },
+              {
+                "name": "POD_NAMESPACE",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "metadata.namespace"
+                  }
+                }
+              }
+            ],
+            "ports":[
+              {
+                "containerPort": 1883
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
