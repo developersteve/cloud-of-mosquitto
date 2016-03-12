@@ -62,6 +62,40 @@ mosquitto    192.168.3.62   nodes         1883/TCP   run=mosquitto   20s
 $ kubectl create -f k8s-pods-bridge/mosquitto-bridge-rc.json
 replicationcontroller "mosquitto" created
 ```
+> ```P.S``` 記得修改檔案裡面的參數：
+```sh
+"env":[
+  {
+    "name": "K8S_API_SERVER_IP",
+    "value": "localhost"
+  },
+  {
+    "name": "K8S_API_SERVER_PORT",
+    "value": "8080"
+  },
+  {
+    "name": "BRIDGE_QOS",
+    "value": "2"
+  },
+  {
+    "name": "BRIDGE_TOPIC",
+    "value": "bridge"
+  },
+  {
+    "name": "POD_METADATA_NAME",
+    "value": "mosquitto"
+  },
+  {
+    "name": "POD_NAMESPACE",
+    "valueFrom": {
+      "fieldRef": {
+        "apiVersion": "v1",
+        "fieldPath": "metadata.namespace"
+      }
+    }
+  }
+]
+```
 
 成功建立後，可以透過 k8s 指令查看：
 ```sh
