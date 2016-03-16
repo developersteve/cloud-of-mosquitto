@@ -1,5 +1,5 @@
-# k8mosquitoo
-k8mosquitoo 是 Kubernetes + Mosquitoo，主要透過 Kubernetes 來快速建置 Mosquitoo MQTT Broker 的 Bridge 叢集。
+# Cloud of Mosquitoes
+Cloud of Mosquitoes 是 Kubernetes + Mosquitoo，主要透過 Kubernetes 來快速建置 Mosquitoo MQTT Broker 的 Bridge 叢集。
 
 ## Simple service bridge for Mosquitoo Broker
 本部分將說明如何透過 Kubernetes 快速建立一個以 k8s-service 來讓多個 Mosquitoo Broker 服務進行共享 Topic（即 Bridge），首先我們要準備 Kubernetes 環境，接著透過指令來建置環境，使用檔案```k8s-service-bridge/mosquitto-bridge-svc.json```：
