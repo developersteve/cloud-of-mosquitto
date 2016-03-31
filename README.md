@@ -1,8 +1,8 @@
-# Cloud of Mosquitoes
-Cloud of Mosquitoes 是 Kubernetes + Mosquitoo，主要透過 Kubernetes 來快速建置 Mosquitoo MQTT Broker 的 Bridge 叢集。
+# Cloud of Mosquitto
+Cloud of Mosquitto 是 Kubernetes + Mosquitto，主要透過 Kubernetes 來快速建置 Mosquitto MQTT Broker 的 Bridge 叢集。
 
-## Simple service bridge for Mosquitoo Broker
-本部分將說明如何透過 Kubernetes 快速建立一個以 k8s-service 來讓多個 Mosquitoo Broker 服務進行共享 Topic（即 Bridge），首先我們要準備 Kubernetes 環境，接著透過指令來建置環境，使用檔案```k8s-service-bridge/mosquitto-bridge-svc.json```：
+## Simple service bridge for Mosquitto Broker
+本部分將說明如何透過 Kubernetes 快速建立一個以 k8s-service 來讓多個 Mosquitto Broker 服務進行共享 Topic（即 Bridge），首先我們要準備 Kubernetes 環境，接著透過指令來建置環境，使用檔案```k8s-service-bridge/mosquitto-bridge-svc.json```：
 ```sh
 $ kubectl create -f k8s-service-bridge/mosquitto-bridge-svc.json
 service "mosquitto-1" created
@@ -42,7 +42,7 @@ bridge_protocol_version mqttv311
 try_private true
 ```
 
-## Simple pods bridge for Mosquitoo Broker
+## Simple pods bridge for Mosquitto Broker
 本部分將說明如何建立 Pods 的容器之間的 Bridge，首先我們要準備 Kubernetes 環境，接著透過指令來建置環境，使用檔案```k8s-pods-bridge/mosquitto-bridge-svc.json```：
 ```sh
 $ kubectl create -f k8s-pods-bridge/mosquitto-bridge-svc.json
@@ -121,7 +121,7 @@ mosquitto-5onyz   1/1       Running   0          1m        10.21.20.195
 mosquitto-eri9x   1/1       Running   0          3m        10.21.20.201
 ```
 
-然後到擴展的節點下查看 Container 的 Mosquitoo Bridge 是否有自動連接上前一個 Container 的 Mosquitoo broker：
+然後到擴展的節點下查看 Container 的 Mosquitto Bridge 是否有自動連接上前一個 Container 的 Mosquitto broker：
 ```sh
 $ docker logs <container_id>
 connection mqttd
