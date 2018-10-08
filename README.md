@@ -1,15 +1,16 @@
 # Cloud of Mosquitto
-Cloud of Mosquitto 是 Kubernetes + Mosquitto，主要透過 Kubernetes 來快速建置 Mosquitto MQTT Broker 的 Bridge 叢集。
+Cloud of Mosquitto is Kubernetes + Mosquitto, which is used to quickly build the Bridge cluster of Mosquitto MQTT Broker through Kubernetes.
 
 ## Simple service bridge for Mosquitto Broker
-本部分將說明如何透過 Kubernetes 快速建立一個以 k8s-service 來讓多個 Mosquitto Broker 服務進行共享 Topic（即 Bridge），首先我們要準備 Kubernetes 環境，接著透過指令來建置環境，使用檔案```k8s-service-bridge/mosquitto-bridge-svc.json```：
+This section explains how to quickly create a top-level (ie Bridge) with k8s-service for multiple Mosquitto Broker services via Kubernetes. First we need to prepare the Kubernetes environment, then build the environment through the instructions, using the file k8s-service- Bridge/mosquitto-bridge-svc.json:
+
 ```sh
 $ kubectl create -f k8s-service-bridge/mosquitto-bridge-svc.json
 service "mosquitto-1" created
 service "mosquitto-2" created
 ```
 
-成功建立後，可以透過 k8s 指令查看：
+After successful establishment, you can view it through the k8s command:
 ```sh
 $ kubectl get svc
 NAME          CLUSTER_IP      EXTERNAL_IP   PORT(S)    SELECTOR      AGE
@@ -18,14 +19,15 @@ mosquitto-1   192.168.3.192   nodes         1883/TCP   server-id=1   23s
 mosquitto-2   192.168.3.154   nodes         1883/TCP   server-id=2   23s
 ```
 
-接著要建立實際執行應用程式的環境，透過指令來建置環境，使用檔案```k8s-service-bridge/mosquitto-bridge-pods.json```：
+Then create an environment where the application is actually executed, and build the environment through instructions, using the file k8s-service-bridge/mosquitto-bridge-pods.json:
+
 ```sh
 $ kubectl create -f k8s-service-bridge/mosquitto-bridge-pods.json
 pod "mosquitto-1" created
 pod "mosquitto-2" created
 ```
 
-完成建立後，即可透過 k8s 指令查看：
+Once the setup is complete, you can view it through the k8s command:
 ```sh
 $ kubectl get pods -o wide
 NAME          READY     STATUS    RESTARTS   AGE       NODE
@@ -33,7 +35,7 @@ mosquitto-1   1/1       Running   0          1m        10.21.20.201
 mosquitto-2   1/1       Running   0          1m        10.21.20.195
 ```
 
-若沒有問題，就可以透過 MQTT Client 進行測試，也可以到指定節點查看 broker 的容器 log 訊息：
+If there are no problems, you can test through the MQTT Client, or you can view the broker's container log message at the specified node:
 ```sh
 $ docker logs <mosquitto_container_id>
 address 192.168.3.192:1883
@@ -43,13 +45,15 @@ try_private true
 ```
 
 ## Simple pods bridge for Mosquitto Broker
-本部分將說明如何建立 Pods 的容器之間的 Bridge，首先我們要準備 Kubernetes 環境，接著透過指令來建置環境，使用檔案```k8s-pods-bridge/mosquitto-bridge-svc.json```：
+This section will explain how to build a bridge between Pods containers. First we need to prepare the Kubernetes environment, then build the environment through the instructions, using the file k8s-pods-bridge/mosquitto-bridge-svc.json:
+
+```k8s-pods-bridge/mosquitto-bridge-svc.json```：
 ```sh
 $ kubectl create -f k8s-pods-bridge/mosquitto-bridge-svc.json
 service "mosquitto" created
 ```
 
-成功建立後，可以透過 k8s 指令查看：
+After successful establishment, you can view it through the k8s command:
 ```sh
 $ kubectl get svc
 NAME         CLUSTER_IP     EXTERNAL_IP   PORT(S)    SELECTOR        AGE
@@ -57,12 +61,15 @@ kubernetes   192.168.3.1    <none>        443/TCP    <none>          16h
 mosquitto    192.168.3.62   nodes         1883/TCP   run=mosquitto   20s
 ```
 
-接著要建立實際執行應用程式的環境，透過指令來建置環境，使用檔案```k8s-pods-bridge/mosquitto-bridge-rc.json```：
+Then create an environment where the application is actually executed, and build the environment through instructions, using the file k8s-pods-bridge/mosquitto-bridge-rc.json:
+
 ```sh
 $ kubectl create -f k8s-pods-bridge/mosquitto-bridge-rc.json
 replicationcontroller "mosquitto" created
 ```
-> ```P.S``` 記得修改檔案裡面的參數：
+
+P.S Remember to modify the parameters in the file:
+
 ```sh
 "env":[
   {
@@ -97,7 +104,8 @@ replicationcontroller "mosquitto" created
 ]
 ```
 
-成功建立後，可以透過 k8s 指令查看：
+After successful establishment, you can view it through the k8s command:
+
 ```sh
 $ kubectl get rc,po -o wide
 CONTROLLER   CONTAINER(S)   IMAGE(S)                            SELECTOR        REPLICAS   AGE
@@ -107,13 +115,15 @@ NAME              READY     STATUS    RESTARTS   AGE       NODE
 mosquitto-eri9x   1/1       Running   0          2m        10.21.20.201
 ```
 
-使用 kubernetes 來擴展 Container：
+Use kubernetes to extend Container:
+
 ```sh
 $ kubectl scale rc mosquitto --replicas=2
 replicationcontroller "mosquitto" scaled
 ```
 
-之後再使用指令查看是否有擴展：
+Then use the instructions to see if there is an extension:
+
 ```sh
 $ kubectl get po -o wide
 NAME              READY     STATUS    RESTARTS   AGE       NODE
@@ -121,7 +131,8 @@ mosquitto-5onyz   1/1       Running   0          1m        10.21.20.195
 mosquitto-eri9x   1/1       Running   0          3m        10.21.20.201
 ```
 
-然後到擴展的節點下查看 Container 的 Mosquitto Bridge 是否有自動連接上前一個 Container 的 Mosquitto broker：
+Then go to the extended node and see if the Mosquitto Bridge of the Container has a Mosquitto broker that automatically connects to the previous Container:
+
 ```sh
 $ docker logs <container_id>
 connection mqttd
@@ -130,4 +141,4 @@ topic # both 2 bridge/ bridge/
 bridge_protocol_version mqttv311
 try_private true
 ```
-> ```P.S```目前做法在 Scale in 時有限制，需從```最先建立```與```最晚建立```的 Container 開始移除。
+P.S currently has a limitation on Scale in, which needs to be removed from the first and last created Container.
